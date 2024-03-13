@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Typo Squatting Checker</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      /* Custom styles to ensure footer sticks to the bottom */
+
+      .custom-scan-btn {
+        background-color: #00BCEB; /* Custom color for the scan button */
+        border-color: #00BCEB; /* Update the border color to match the background */
+      }
+
+      /* If you want to change the hover and active states as well */
+      .custom-scan-btn:hover {
+        background-color: darken(
+            #00BCEB,
+          10%
+        ); /* Darken the button color on hover */
+        border-color: darken(
+            #00BCEB,
+          10%
+        ); /* Darken the border color on hover */
+      }
+
+      .custom-scan-btn:active {
+        background-color: darken(
+            #00BCEB,
+          15%
+        ); /* Further darken the button color when active/clicked */
+        border-color: darken(
+            #00BCEB,
+          15%
+        ); /* Further darken the border color when active/clicked */
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      #content {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+      }
+      .flex-grow-1 {
+        flex: 1;
+      }
+      .footer {
+        background-color: #141414; /* Adjusted to Bootstrap's dark background color */
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="background-color: #141414;" id="content">
+      <!-- Page Content -->
+      <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-8 mx-auto">
+              <!-- Main Card -->
+              <div class="card shadow">
+                <div class="card-body">
+                  <h1 class="card-title text-center mb-4">
+                    Typo Squatting Checker
+                  </h1>
+                  <p class="card-text text-center mb-4">
+                    Enter text to check for possible typo-squatting.
+                  </p>
+
+                  <!-- Scan Form -->
+                  <form id="scanForm">
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="textInput"
+                        placeholder="Enter text"
+                        required
+                      />
+                    </div>
+
+                    <h5 class="text-center mb-3">Select Algorithms</h5>
+
+                    <!-- Algorithm Selection -->
+                    <div class="row">
+                      <div class="col-lg-6 mb-3">
+                        <div class="card h-100">
+                          <div class="card-body">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value=""
+                              id="algorithm1"
+                            />
+                            <label class="form-check-label" for="algorithm1"
+                              >Algorithm 1</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 mb-3">
+                        <div class="card h-100">
+                          <div class="card-body">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value=""
+                              id="algorithm2"
+                            />
+                            <label class="form-check-label" for="algorithm2"
+                              >Algorithm 2</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 mb-3">
+                        <div class="card h-100">
+                          <div class="card-body">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value=""
+                              id="algorithm3"
+                            />
+                            <label class="form-check-label" for="algorithm3"
+                              >Algorithm 3</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 mb-3">
+                        <div class="card h-100">
+                          <div class="card-body">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              value=""
+                              id="algorithm4"
+                            />
+                            <label class="form-check-label" for="algorithm4"
+                              >Algorithm 4</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      <button
+                        type="submit"
+                        class="btn btn-primary mt-2 custom-scan-btn"
+                      >
+                        Scan
+                      </button>
+                    </div>
+                    <!-- Progress Bar Container -->
+                    <div
+                      id="progressBarContainer"
+                      class="text-center mt-4"
+                      style="display: none"
+                    >
+                      <p id="progressMessage"></p>
+                      <div style="background-color: #141414;" class="progress">
+                        <div 
+                          id="progressBar"
+                          class="progress-bar progress-bar-striped progress-bar-animated"
+                          role="progressbar"
+                          aria-valuenow="0"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style="width: 0%"
+                        ></div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer text-center py-3">
+        <div class="container">
+          <span>&copy; 2023 Typo Squatting Checker</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script>
+        document.getElementById('scanForm').addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent the form from submitting normally
+          
+          var inputText = document.getElementById('textInput').value.trim();
+          if (inputText) {
+            var progressMessage = "Generating possible typo squatted domains for \"" + inputText + "\"";
+            document.getElementById('progressMessage').innerText = progressMessage;
+            document.getElementById('progressBarContainer').style.display = 'block';
+      
+            var progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            progressBar.setAttribute('aria-valuenow', 0);
+      
+            var progressValue = 0;
+            var interval = setInterval(function() {
+              progressValue++;
+              progressBar.style.width = progressValue + '%';
+              progressBar.setAttribute('aria-valuenow', progressValue);
+      
+              if (progressValue >= 100) {
+                clearInterval(interval);
+                // Save inputText in localStorage before redirecting
+                localStorage.setItem('inputText', inputText);
+                // Redirect to results.html
+                window.location.href = 'results.html';
+              }
+            }, 100);
+          } else {
+            alert('Please enter text to check for possible typo-squatting.');
+          }
+        });
+      </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.9/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

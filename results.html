@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Typo Squatting Results</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      .card-header {
+        background-color: #00BCEB;
+        color: white;
+      }
+      .big-table {
+        font-size: 0.8rem; /* Adjusted font size to fit more content */
+      }
+      .scrollable-table {
+        height: 500px; /* Adjusted height for scrolling */
+        overflow-y: auto;
+      }
+      /* Use Bootstrap's grid for responsive layout */
+      .table-col {
+        padding: 0; /* Reset padding for tighter table display */
+      }
+      .card {
+        margin: 0 15px; /* Add some spacing between cards */
+      }
+      /* Flex container for horizontal alignment */
+      .table-container {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .footer {
+        background-color: #141414; /* Adjusted to Bootstrap's dark background color */
+        color: white;
+      }
+      #remediateModal .modal-content {
+        text-align: center;
+      }
+      #success-message {
+        display: none;
+        color: green;
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid mt-4">
+      <div class="card mb-4">
+        <div class="card-header text-center">
+          <h1 class="mb-0">Typo Squatting Results</h1>
+          <!-- Removed margin-bottom with mb-0 for better spacing -->
+          <button
+            id="remediateButton"
+            type="button"
+            class="btn btn-dark"
+            data-toggle="modal"
+            data-target="#remediateModal"
+          >
+            Remediate
+          </button>
+        </div>
+      </div>
+      <div class="table-container">
+        <div id="table1" class="table-col col-lg-3 col-md-6 col-sm-12">
+          <!-- Table 1 will be generated here -->
+        </div>
+        <div id="table2" class="table-col col-lg-3 col-md-6 col-sm-12">
+          <!-- Table 2 will be generated here -->
+        </div>
+        <div id="table3" class="table-col col-lg-3 col-md-6 col-sm-12">
+          <!-- Table 3 will be generated here -->
+        </div>
+        <div id="table4" class="table-col col-lg-3 col-md-6 col-sm-12">
+          <!-- Table 4 will be generated here -->
+        </div>
+      </div>
+
+      <!-- Remediate Modal -->
+      <div class="modal" id="remediateModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Remediate Domain</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>
+                Was "<span id="input-text-display"></span>" the actual domain
+                you were trying to browse?
+              </p>
+              <p>The entered domain looks to be Typo Squatted.</p>
+            </div>
+            <div class="modal-footer">
+              <button style="background-color: #00BCEB;" id="fixButton" type="button" class="btn btn-primary">
+                Quick Fix
+              </button>
+            </div>
+            <div id="success-message">
+              <p>✅ Domain added to block list & Redirecting you to the correct domain as per our database</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Part 2 will include the JavaScript logic to generate the tables with random combinations -->
+    <script>
+      // Helper function to generate a random character
+      function getRandomChar() {
+        const possibleChars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        return possibleChars.charAt(
+          Math.floor(Math.random() * possibleChars.length)
+        );
+      }
+
+      // Function to generate random domain variations
+      function generateRandomDomain(baseText) {
+        let randomDomain = "";
+        for (let i = 0; i < baseText.length; i++) {
+          randomDomain += Math.random() < 0.5 ? baseText[i] : getRandomChar();
+        }
+        return randomDomain + ".com";
+      }
+
+      // Function to create and populate a table with random domain names
+      function populateTable(tableId, baseText) {
+        const tableContainer = document.getElementById(tableId);
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const cardHeader = document.createElement("div");
+        cardHeader.className = "card-header";
+        cardHeader.textContent = `Random Combinations of "${baseText}"`;
+        card.appendChild(cardHeader);
+
+        const cardBody = document.createElement("div");
+        cardBody.className = "card-body scrollable-table";
+
+        const table = document.createElement("table");
+        table.className = "table table-striped big-table";
+
+        const tbody = document.createElement("tbody");
+        for (let i = 0; i < 100; i++) {
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
+          td.textContent = generateRandomDomain(baseText);
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        }
+        table.appendChild(tbody);
+        cardBody.appendChild(table);
+        card.appendChild(cardBody);
+        tableContainer.appendChild(card);
+      }
+
+      // When the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        const baseText = localStorage.getItem("inputText") || "SampleText"; // Using 'SampleText' as a fallback
+        localStorage.removeItem("inputText"); // Clear the stored text
+
+        // Generate tables for each table container
+        populateTable("table1", baseText);
+        populateTable("table2", baseText);
+        populateTable("table3", baseText);
+        populateTable("table4", baseText);
+      });
+    </script>
+    <script>
+      // ... (other functions remain the same)
+
+      // Function to adjust the table height based on the webpage height
+      function adjustTableHeight() {
+        // Calculate the available height for the table
+        // Adjust 'otherElementsHeight' depending on the actual height of other elements and margins
+        const otherElementsHeight =
+          document.querySelector("h1").offsetHeight + 2 * 24; // Example: header height + some margin
+        const viewportHeight = window.innerHeight;
+        const availableHeight = viewportHeight - otherElementsHeight;
+
+        // Set the height for all scrollable tables
+        const scrollableTables = document.querySelectorAll(".scrollable-table");
+        scrollableTables.forEach(function (table) {
+          table.style.height = availableHeight + "px";
+        });
+      }
+
+      // When the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        // ... (existing DOMContentLoaded logic)
+
+        // Adjust the table height on load
+        adjustTableHeight();
+      });
+
+      // Adjust the table height on window resize
+      window.addEventListener("resize", adjustTableHeight);
+    </script>
+   <script>
+    // Function to adjust the height of the scrollable table
+    // ... (existing function to adjust table height)
+  
+    // Event listener for DOMContentLoaded and window resize
+    // ... (existing event listeners)
+  
+    // Function to handle the click event on the "Fix" button
+    function handleFixButtonClick() {
+      // Assuming you have a variable 'inputText' with the domain name
+      // You would need to get this from user input or another source in your actual application
+      const inputText = 'example.com'; // Replace with actual domain retrieval logic
+      
+      // Perform the action to add the domain to the block list
+      // For demonstration purposes, we'll just display a success message
+      document.getElementById('success-message').style.display = 'block';
+  
+      // Wait for 2 seconds before opening the URL in a new tab
+      setTimeout(() => {
+        window.open('http://' + inputText, '_blank');
+      }, 2000);
+  
+      // Optionally, you could close the modal after the success message is shown
+      setTimeout(() => {
+        $('#remediateModal').modal('hide');
+      }, 2000);
+    }
+  
+    // Function to update the modal with the input text
+    function updateModalInputText() {
+      // The same inputText used in handleFixButtonClick should be used here
+      const inputText = 'example.com'; // Replace with actual domain retrieval logic
+      document.getElementById('input-text-display').textContent = inputText;
+    }
+  
+    document.addEventListener('DOMContentLoaded', function() {
+      // ... (existing logic for table adjustments)
+      updateModalInputText();
+      document.getElementById('fixButton').addEventListener('click', handleFixButtonClick);
+    });
+  
+  </script>
+      
+      
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.9.5/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
